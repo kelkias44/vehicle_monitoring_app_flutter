@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "845675734376",
+    "project_id": "vehicle-monitoring-app-33d9e",
+    "storage_bucket": "vehicle-monitoring-app-33d9e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:845675734376:android:039bd3eae00aa6fb5ca2dd",
+        "android_client_info": {
+          "package_name": "com.example.vehicle_monitoring"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPlICvmTiJkPmtYJFu22lzLSWVS8vgyGk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
