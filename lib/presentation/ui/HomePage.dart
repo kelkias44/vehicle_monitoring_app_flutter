@@ -5,8 +5,6 @@ import 'package:vehicle_monitoring/presentation/bloc/vehicle_bloc.dart';
 import 'package:vehicle_monitoring/presentation/bloc/vehicle_state.dart';
 import 'package:vehicle_monitoring/presentation/bloc/vehucle_event.dart';
 import 'package:vehicle_monitoring/presentation/ui/widgets/title_description_row.dart';
-import 'package:vehicle_monitoring/utils/constants.dart';
-import 'package:vehicle_monitoring/utils/local_storage_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -32,71 +30,60 @@ class _HomePageState extends State<HomePage> {
         title: const Text("Vehicle Monitoring"),
         centerTitle: true,
       ),
-      body:
-          // FutureBuilder<String?>(
-          //   future: documentId,
-          //   builder: (context, snapshot) {
-          //     if (snapshot.connectionState == ConnectionState.waiting) {
-          //       return const Center(child: CircularProgressIndicator());
-          //     }
-
-          // final docId = snapshot.data;
-          // if (docId == null) {
-          //   return ;
-          // }
-
-          //   Column(
-          // children: [
-          BlocBuilder<VehicleBloc, VehicleState>(
-        builder: (context, state) {
-          if (state is LoadingState) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is LoadedTrackState) {
-            if (state.vehicle == null) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "No vehicle found. Please add your vehicle.",
-                      style: TextStyle(fontSize: 16),
+      body: SingleChildScrollView(
+        child: BlocBuilder<VehicleBloc, VehicleState>(
+          builder: (context, state) {
+            if (state is LoadingState) {
+              return SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: const Center(child: CircularProgressIndicator()));
+            } else if (state is LoadedTrackState) {
+              if (state.vehicle == null) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "No vehicle found. Please add your vehicle.",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            _showAddVehicleDialog(context);
+                          },
+                          child: const Text("Add Vehicle"),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        _showAddVehicleDialog(context);
-                      },
-                      child: const Text("Add Vehicle"),
-                    ),
-                  ],
+                  ),
+                );
+              } else {
+                final vehicle = state.vehicle!;
+                return _buildVehicleInfo(context, vehicle);
+              }
+            } else if (state is ErrorState) {
+              return SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: Center(
+                  child: Text("Error: ${state.message}"),
                 ),
               );
-            } else {
-              final vehicle = state.vehicle!;
-              return _buildVehicleInfo(context, vehicle);
             }
-          } else if (state is ErrorState) {
-            return Center(
-              child: Text("Error: ${state.message}"),
-            );
-          }
 
-          return const Center(
-            child: Text("Unknown state. Please try again later."),
-          );
-        },
+            return SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: const Center(
+                child: Text("Unknown state. Please try again later."),
+              ),
+            );
+          },
+        ),
       ),
-      //   ],
-      // )
-      // },
-      // ),
     );
   }
-
-  // Future<String?> _checkVehicleAdded() async {
-  //   final localStorageService = await LocalStorageService.getInstance();
-  //   return localStorageService.getStringFromDisk(DOCUMENT_ID);
-  // }
 
   Widget _buildVehicleInfo(BuildContext context, VehicleInfo vehicle) {
     return Padding(
@@ -113,9 +100,13 @@ class _HomePageState extends State<HomePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Vehicle Info",
-                  style: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.w700)),
+              Text(
+                "Vehicle Info",
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
               IconButton(
                 icon: const Icon(Icons.edit, color: Colors.blue),
                 onPressed: () {
